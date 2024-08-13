@@ -25,6 +25,8 @@ import javax.swing.JScrollPane;
 public class CatalogoFilmes extends JFrame {
 
     private JPanel panel;
+    private JButton btnAdicionarFilmes;
+    private JButton btnFechar;
 
     public CatalogoFilmes() {
         initComponents();
@@ -34,7 +36,7 @@ public class CatalogoFilmes extends JFrame {
 
     private void initComponents() {
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
-        setPreferredSize(new java.awt.Dimension(800, 600));
+        setPreferredSize(new Dimension(800, 600));
         setLayout(new BorderLayout()); // Usando BorderLayout para adicionar o painel no centro
 
         panel = new JPanel();
@@ -42,6 +44,31 @@ public class CatalogoFilmes extends JFrame {
 
         JScrollPane scrollPane = new JScrollPane(panel);
         add(scrollPane, BorderLayout.CENTER); // Adiciona o JScrollPane ao centro do JFrame
+
+        // Painel para os botões fixos
+        JPanel panelBotoes = new JPanel(new FlowLayout(FlowLayout.LEFT));
+        
+        // Botão "Adicionar Filmes"
+        btnAdicionarFilmes = new JButton("Adicionar Filmes");
+        btnAdicionarFilmes.setPreferredSize(new Dimension(130, 40));
+        panelBotoes.add(btnAdicionarFilmes);
+        
+        // Botão "X" para fechar
+        btnFechar = new JButton("X");
+        btnFechar.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
+        btnFechar.setForeground(new java.awt.Color(255, 0, 51));
+        btnFechar.setPreferredSize(new Dimension(40, 40)); // Tamanho fixo para o botão "X"
+        btnFechar.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                TelaAdm telaAdm = new TelaAdm();
+                CatalogoFilmes.this.setVisible(false);
+                telaAdm.setVisible(true);
+            }
+        });
+        
+        panelBotoes.add(btnFechar);
+        add(panelBotoes, BorderLayout.SOUTH); // Adiciona o painel de botões na parte inferior
 
         pack();
     }
@@ -65,7 +92,6 @@ public class CatalogoFilmes extends JFrame {
                 filmes.add(filme);
             }
     
-            panel.removeAll();
             for (Filme filme : filmes) {
                 JButton button = new JButton();
                 // Use o ID do filme para carregar a imagem correspondente
@@ -122,7 +148,3 @@ public class CatalogoFilmes extends JFrame {
         });
     }
 }
-
-
-
-
