@@ -4,6 +4,10 @@
  */
 package CineMais;
 import java.awt.CardLayout;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 /**
  *
  * @author 2023101202010006
@@ -195,21 +199,52 @@ public class TelaInicial extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void jButton3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton3ActionPerformed
-        String senha = new String(jPasswordField1.getPassword()); // Usar getPassword() para senha
-        String user = jTextPane1.getText(); // getText() para o usuário
-
-        // Comparar strings usando equals()
-        if(senha.equals("123") && user.equals("123")) {
+    String senha = new String(jPasswordField1.getPassword()); // Usar getPassword() para senha
+    String user = jTextPane1.getText(); // getText() para o usuário
+    
+    Connection conn = null;
+    PreparedStatement stmt = null;
+    ResultSet rs = null;
+    
+    try {
+        // Estabelece a conexão com o banco de dados
+        conn = ConexaoDB.getConnection();
+        
+        // Prepara a consulta SQL para buscar o usuário e senha
+        String sql = "SELECT * FROM users WHERE `Usuário` = ? AND `Senha` = ?";
+        stmt = conn.prepareStatement(sql);
+        stmt.setString(1, user);
+        stmt.setString(2, senha);
+        
+        // Executa a consulta
+        rs = stmt.executeQuery();
+        
+        // Verifica se a consulta retornou algum resultado
+        if (rs.next()) {
+            // Login bem-sucedido, abre a tela de administrador
             TelaAdm telaAdm = new TelaAdm();
             telaAdm.setVisible(true);
             this.setVisible(false);
-        }else{
+        } else {
+            // Login falhou, mostra a tela de erro
             TelaError telaError = new TelaError();
             telaError.setVisible(true);
         }
         
-        // TODOdd your handling code here:
-    }//GEN-LAST:event_jButton3ActionPerformed
+    } catch (SQLException e) {
+        e.printStackTrace();
+        // Aqui você poderia exibir uma mensagem de erro para o usuário
+    } finally {
+        try {
+            if (rs != null) rs.close();
+            if (stmt != null) stmt.close();
+            if (conn != null) conn.close();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+}//GEN-LAST:event_jButton3ActionPerformed
+
 
     private void jTextPane1InputMethodTextChanged(java.awt.event.InputMethodEvent evt) {//GEN-FIRST:event_jTextPane1InputMethodTextChanged
         // TODO add your handling code here:
